@@ -9,26 +9,30 @@ MK-Whois provides a Linux-like `whois` experience in PowerShell. It queries WHOI
 
 ## Installation
 
-Clone or copy this repository, then import the module by path:
+Clone this repository, then run the installer from the repository root:
+
+```powershell
+.\Install-MKWhois.ps1 -Force
+```
+
+The installer copies the module into the current user's PowerShell module paths. After opening a new PowerShell terminal, PowerShell can auto-load the module when you run `Get-MKWhois`, `whois`, or `mk-whois`.
+
+For the most predictable alias experience in every new terminal, let the installer add a profile import:
+
+```powershell
+.\Install-MKWhois.ps1 -Force -AddProfileImport
+```
+
+This adds the following line to the current user's all-hosts profile when it is not already present:
+
+```powershell
+Import-Module MK-Whois -ErrorAction Stop
+```
+
+You can still import the module directly from the repository without installing it:
 
 ```powershell
 Import-Module "C:\Users\MLAR\Src\Github\mklarsen\whois4ps\MK-Whois\MK-Whois.psd1"
-```
-
-To make the command available in every new PowerShell terminal, add the import to your PowerShell profile:
-
-```powershell
-$moduleManifest = "C:\Users\MLAR\Src\Github\mklarsen\whois4ps\MK-Whois\MK-Whois.psd1"
-if (Test-Path $moduleManifest) {
-    Import-Module $moduleManifest
-}
-```
-
-Create the profile first if it does not exist:
-
-```powershell
-New-Item -ItemType File -Path $PROFILE -Force
-notepad $PROFILE
 ```
 
 ## Usage
@@ -39,6 +43,7 @@ Get-MKWhois example.com
 
 # Linux-like text output
 whois example.com -Text
+mk-whois example.com -Text
 
 # Force a transport
 Get-MKWhois example.com -Protocol Whois

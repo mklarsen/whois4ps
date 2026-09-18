@@ -194,4 +194,5 @@ function Get-MKWhois {
 }
 
 Set-Alias -Name whois -Value Get-MKWhois
-Export-ModuleMember -Function Get-MKWhois -Alias whois
+Set-Alias -Name mk-whois -Value Get-MKWhois
+Export-ModuleMember -Function Get-MKWhois -Alias whois, mk-whois

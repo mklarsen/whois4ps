@@ -10,7 +10,7 @@
     FunctionsToExport = @('Get-MKWhois')
     CmdletsToExport   = @()
     VariablesToExport = @()
-    AliasesToExport   = @('whois')
+    AliasesToExport   = @('whois', 'mk-whois')
     PrivateData       = @{
         PSData = @{
             Tags = @('WHOIS', 'RDAP', 'DNS', 'Network', 'PowerShell')
