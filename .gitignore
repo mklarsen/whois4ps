@@ -1,0 +1,13 @@
+# PowerShell module build output
+*.nupkg
+*.snupkg
+
+# Test and coverage output
+TestResults/
+coverage/
+
+# Editor and operating system files
+.vs/
+.vscode/
+Thumbs.db
+Desktop.ini
