@@ -93,4 +93,6 @@ The parser and packaging tests do not require live network access. A live lookup
 
 ## Support
 
-[MKLarsen is Martin is turning coffee into code, Cloud setups, and TikTok videos.](https://buymeacoffee.com/mklarsen)
+If MK-Whois saves you time or makes PowerShell a little nicer to use, you can support the project here:
+
+[Buy Martin a coffee](https://buymeacoffee.com/mklarsen)
