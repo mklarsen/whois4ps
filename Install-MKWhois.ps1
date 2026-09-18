@@ -1,7 +1,8 @@
 [CmdletBinding(SupportsShouldProcess = $true)]
 param(
     [switch]$Force,
-    [switch]$AddProfileImport
+    [switch]$AddProfileImport,
+    [switch]$SkipSessionImport
 )
 
 $ErrorActionPreference = 'Stop'
@@ -45,6 +46,18 @@ $documentsRoot = [Environment]::GetFolderPath('MyDocuments')
 $moduleRoots = @()
 $replaceAll = $false
 $skipAll = $false
+
+function Import-MKWhoisInstalledModule {
+    param([Parameter(Mandatory = $true)][string[]]$InstalledPath)
+
+    if ($SkipSessionImport -or $InstalledPath.Count -eq 0) { return $false }
+
+    $installedManifest = Join-Path $InstalledPath[0] "$moduleName.psd1"
+    Import-Module $installedManifest -Force -Global
+    Set-Alias -Name whois -Value Get-MKWhois -Scope Global -Force
+    Set-Alias -Name mk-whois -Value Get-MKWhois -Scope Global -Force
+    return $true
+}
 
 if ($IsWindows -or $env:OS -eq 'Windows_NT') {
     $moduleRoots += Join-Path $documentsRoot 'PowerShell\Modules'
@@ -98,11 +111,14 @@ if ($AddProfileImport) {
     }
 }
 
+$sessionImport = Import-MKWhoisInstalledModule -InstalledPath @($installedPaths)
+
 [pscustomobject]@{
     ModuleName       = $moduleName
     Version          = $moduleInfo.Version.ToString()
     InstalledPaths   = @($installedPaths)
     ProfileImport    = [bool]$AddProfileImport
+    SessionImport    = [bool]$sessionImport
     Commands         = @('Get-MKWhois', 'whois', 'mk-whois')
     RestartSuggested = $true
 }

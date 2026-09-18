@@ -29,6 +29,7 @@ Describe 'MK-Whois implementation contract' {
         $source | Should Match 'function Invoke-MKWhoisTcp'
         $source | Should Match 'function Invoke-MKRdap'
         $source | Should Match 'Get-MKRdapBaseUri'
+        $source | Should Match '\[System\.Text\.Encoding\]::ASCII'
     }
 
     It 'defines explicit domain validation' {
@@ -57,6 +58,8 @@ Describe 'MK-Whois installer' {
         $source | Should Match 'Read-MKInstallUpdateChoice'
         $source | Should Match 'Update existing installation\?'
         $source | Should Match 'Re-run with -Force to update without prompting'
+        $source | Should Match 'Import-MKWhoisInstalledModule'
+        $source | Should Match 'SessionImport'
     }
 
     It 'provides a standalone online installer' {
@@ -67,5 +70,7 @@ Describe 'MK-Whois installer' {
         $source | Should Match 'Expand-Archive'
         $source | Should Match 'Install-MKWhoisModuleFolder'
         $source | Should Match 'SourceArchivePath'
+        $source | Should Match 'Import-MKWhoisInstalledModule'
+        $source | Should Match 'SessionImport'
     }
 }
