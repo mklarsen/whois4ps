@@ -54,5 +54,18 @@ Describe 'MK-Whois installer' {
         $source | Should Match 'PowerShell\\Modules'
         $source | Should Match 'WindowsPowerShell\\Modules'
         $source | Should Match 'AddProfileImport'
+        $source | Should Match 'Read-MKInstallUpdateChoice'
+        $source | Should Match 'Update existing installation\?'
+        $source | Should Match 'Re-run with -Force to update without prompting'
+    }
+
+    It 'provides a standalone online installer' {
+        $installerPath = Join-Path $testRoot '..\Install-MKWhoisOnline.ps1'
+        $source = Get-Content -Path $installerPath -Raw
+        $source | Should Match 'codeload.github.com'
+        $source | Should Match 'Invoke-WebRequest'
+        $source | Should Match 'Expand-Archive'
+        $source | Should Match 'Install-MKWhoisModuleFolder'
+        $source | Should Match 'SourceArchivePath'
     }
 }

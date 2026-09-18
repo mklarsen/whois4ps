@@ -9,13 +9,35 @@ MK-Whois provides a Linux-like `whois` experience in PowerShell. It queries WHOI
 
 ## Installation
 
+Install directly from GitHub with PowerShell:
+
+```powershell
+& ([scriptblock]::Create((Invoke-RestMethod 'https://raw.githubusercontent.com/mklarsen/whois4ps/main/Install-MKWhoisOnline.ps1'))) -Force
+```
+
+Or with `curl` and PowerShell:
+
+```powershell
+curl.exe -fsSL https://raw.githubusercontent.com/mklarsen/whois4ps/main/Install-MKWhoisOnline.ps1 | pwsh -NoProfile -Command - -Force
+```
+
+To also add the profile import, append `-AddProfileImport` to either command. Review remote install scripts before running them in environments you do not control.
+
+## Local Installation
+
 Clone this repository, then run the installer from the repository root:
+
+```powershell
+.\Install-MKWhois.ps1
+```
+
+The installer copies the module into the current user's PowerShell module paths. If MK-Whois is already installed, the installer asks whether it should update the existing installation. Press Enter or `Y` to update, `A` to update all module paths, `N` to skip one path, or `L` to skip all remaining paths. After opening a new PowerShell terminal, PowerShell can auto-load the module when you run `Get-MKWhois`, `whois`, or `mk-whois`.
+
+To replace an existing installation without prompting, use `-Force`:
 
 ```powershell
 .\Install-MKWhois.ps1 -Force
 ```
-
-The installer copies the module into the current user's PowerShell module paths. After opening a new PowerShell terminal, PowerShell can auto-load the module when you run `Get-MKWhois`, `whois`, or `mk-whois`.
 
 For the most predictable alias experience in every new terminal, let the installer add a profile import:
 
