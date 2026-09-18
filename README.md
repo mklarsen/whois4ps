@@ -90,3 +90,7 @@ Invoke-Pester .\Tests\MK-Whois.Tests.ps1
 ```
 
 The parser and packaging tests do not require live network access. A live lookup can be checked after importing the module with `Get-MKWhois example.com -Text`.
+
+## Support
+
+[MKLarsen is Martin is turning coffee into code, Cloud setups, and TikTok videos.](https://buymeacoffee.com/mklarsen)
