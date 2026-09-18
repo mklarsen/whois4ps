@@ -11,12 +11,14 @@ Describe 'MK-Whois module packaging' {
         $manifestData = Import-PowerShellDataFile -Path $manifestPath
         ($manifestData.FunctionsToExport -contains 'Get-MKWhois') | Should Be $true
         ($manifestData.AliasesToExport -contains 'whois') | Should Be $true
+        ($manifestData.AliasesToExport -contains 'mk-whois') | Should Be $true
     }
 
     It 'imports the public command and alias' {
         Import-Module $manifestPath -Force
         (Get-Command Get-MKWhois).CommandType | Should Be 'Function'
         (Get-Command whois).Definition | Should Be 'Get-MKWhois'
+        (Get-Command mk-whois).Definition | Should Be 'Get-MKWhois'
         Remove-Module MK-Whois -ErrorAction SilentlyContinue
     }
 }
@@ -42,5 +44,15 @@ Describe 'MK-Whois implementation contract' {
         ($parameters.Keys -contains 'Raw') | Should Be $true
         ($parameters.Keys -contains 'Text') | Should Be $true
         ($parameters.Keys -contains 'TimeoutMilliseconds') | Should Be $true
+    }
+}
+
+Describe 'MK-Whois installer' {
+    It 'provides a current-user installer for PSModulePath installation' {
+        $installerPath = Join-Path $testRoot '..\Install-MKWhois.ps1'
+        $source = Get-Content -Path $installerPath -Raw
+        $source | Should Match 'PowerShell\\Modules'
+        $source | Should Match 'WindowsPowerShell\\Modules'
+        $source | Should Match 'AddProfileImport'
     }
 }
