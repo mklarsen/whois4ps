@@ -6,7 +6,8 @@ param(
     [string]$RepositoryName = 'whois4ps',
     [string]$Branch = 'main',
     [string]$ArchiveUri,
-    [string]$SourceArchivePath
+    [string]$SourceArchivePath,
+    [switch]$SkipSessionImport
 )
 
 $ErrorActionPreference = 'Stop'
@@ -98,6 +99,18 @@ function Add-MKWhoisProfileImport {
     return $true
 }
 
+function Import-MKWhoisInstalledModule {
+    param([Parameter(Mandatory = $true)][string[]]$InstalledPath)
+
+    if ($SkipSessionImport -or $InstalledPath.Count -eq 0) { return $false }
+
+    $installedManifest = Join-Path $InstalledPath[0] 'MK-Whois.psd1'
+    Import-Module $installedManifest -Force -Global
+    Set-Alias -Name whois -Value Get-MKWhois -Scope Global -Force
+    Set-Alias -Name mk-whois -Value Get-MKWhois -Scope Global -Force
+    return $true
+}
+
 if (-not $ArchiveUri) {
     $ArchiveUri = "https://codeload.github.com/$RepositoryOwner/$RepositoryName/zip/refs/heads/$Branch"
 }
@@ -131,6 +144,7 @@ try {
     $moduleInfo = Test-ModuleManifest -Path $manifestPath
     $installedPaths = Install-MKWhoisModuleFolder -SourceRoot $moduleRoot.FullName -Version $moduleInfo.Version
     $profileImport = Add-MKWhoisProfileImport
+    $sessionImport = Import-MKWhoisInstalledModule -InstalledPath @($installedPaths)
 
     [pscustomobject]@{
         ModuleName       = 'MK-Whois'
@@ -138,6 +152,7 @@ try {
         Source           = $ArchiveUri
         InstalledPaths   = @($installedPaths)
         ProfileImport    = [bool]$profileImport
+        SessionImport    = [bool]$sessionImport
         Commands         = @('Get-MKWhois', 'whois', 'mk-whois')
         RestartSuggested = $true
     }

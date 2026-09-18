@@ -48,11 +48,11 @@ function Invoke-MKWhoisTcp {
         $client.ReceiveTimeout = $TimeoutMilliseconds
         $client.SendTimeout = $TimeoutMilliseconds
         $stream = $client.GetStream()
-        $writer = New-Object System.IO.StreamWriter($stream, (New-Object System.Text.ASCIIEncoding))
+        $writer = New-Object System.IO.StreamWriter($stream, [System.Text.Encoding]::ASCII)
         $writer.NewLine = "`r`n"
         $writer.WriteLine($Domain)
         $writer.Flush()
-        $reader = New-Object System.IO.StreamReader($stream, (New-Object System.Text.Encoding.ASCII))
+        $reader = New-Object System.IO.StreamReader($stream, [System.Text.Encoding]::ASCII)
         return $reader.ReadToEnd()
     }
     finally {

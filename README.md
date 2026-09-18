@@ -12,16 +12,16 @@ MK-Whois provides a Linux-like `whois` experience in PowerShell. It queries WHOI
 Install directly from GitHub with PowerShell:
 
 ```powershell
-& ([scriptblock]::Create((Invoke-RestMethod 'https://raw.githubusercontent.com/mklarsen/whois4ps/main/Install-MKWhoisOnline.ps1'))) -Force
+& ([scriptblock]::Create((Invoke-RestMethod 'https://raw.githubusercontent.com/mklarsen/whois4ps/main/Install-MKWhoisOnline.ps1'))) -Force -AddProfileImport
 ```
 
 Or with `curl` and PowerShell:
 
 ```powershell
-curl.exe -fsSL https://raw.githubusercontent.com/mklarsen/whois4ps/main/Install-MKWhoisOnline.ps1 | pwsh -NoProfile -Command - -Force
+curl.exe -fsSL https://raw.githubusercontent.com/mklarsen/whois4ps/main/Install-MKWhoisOnline.ps1 | pwsh -NoProfile -Command - -Force -AddProfileImport
 ```
 
-To also add the profile import, append `-AddProfileImport` to either command. Review remote install scripts before running them in environments you do not control.
+The installer imports MK-Whois into the current session so `whois` works immediately, even if another WHOIS module is already installed. `-AddProfileImport` makes the `whois` and `mk-whois` aliases win consistently in new PowerShell terminals too. Review remote install scripts before running them in environments you do not control.
 
 ## Local Installation
 
