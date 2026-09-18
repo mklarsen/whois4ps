@@ -14,9 +14,37 @@ if (-not (Test-Path -LiteralPath $sourceManifest -PathType Leaf)) {
     throw "Module manifest was not found at '$sourceManifest'."
 }
 
+function Read-MKInstallUpdateChoice {
+    param([Parameter(Mandatory = $true)][string]$DestinationRoot)
+
+    while ($true) {
+        Write-Host "MK-Whois is already installed at '$DestinationRoot'." -ForegroundColor Yellow
+        Write-Host 'Update existing installation? [Y] Yes  [A] Yes to all  [N] No  [L] No to all (default is Y): ' -NoNewline
+        $answer = [Console]::ReadLine()
+        if ($null -eq $answer) {
+            throw 'No interactive input was available. Re-run with -Force to update without prompting.'
+        }
+
+        switch ($answer.Trim().ToLowerInvariant()) {
+            '' { return 'Yes' }
+            'y' { return 'Yes' }
+            'yes' { return 'Yes' }
+            'a' { return 'YesToAll' }
+            'all' { return 'YesToAll' }
+            'n' { return 'No' }
+            'no' { return 'No' }
+            'l' { return 'NoToAll' }
+            'no to all' { return 'NoToAll' }
+            default { Write-Host "Please answer Y, A, N, or L." -ForegroundColor Yellow }
+        }
+    }
+}
+
 $moduleInfo = Test-ModuleManifest -Path $sourceManifest
 $documentsRoot = [Environment]::GetFolderPath('MyDocuments')
 $moduleRoots = @()
+$replaceAll = $false
+$skipAll = $false
 
 if ($IsWindows -or $env:OS -eq 'Windows_NT') {
     $moduleRoots += Join-Path $documentsRoot 'PowerShell\Modules'
@@ -29,7 +57,20 @@ else {
 $installedPaths = foreach ($moduleRoot in ($moduleRoots | Select-Object -Unique)) {
     $destinationRoot = Join-Path $moduleRoot $moduleName
     if ((Test-Path -LiteralPath $destinationRoot) -and -not $Force) {
-        throw "'$destinationRoot' already exists. Re-run with -Force to replace it."
+        if ($skipAll) {
+            Write-Verbose "Skipped existing installation at '$destinationRoot'."
+            continue
+        }
+
+        if (-not $replaceAll) {
+            $choice = Read-MKInstallUpdateChoice -DestinationRoot $destinationRoot
+            switch ($choice) {
+                'Yes' { }
+                'YesToAll' { $replaceAll = $true }
+                'No' { Write-Verbose "Skipped existing installation at '$destinationRoot'."; continue }
+                'NoToAll' { $skipAll = $true; Write-Verbose "Skipped existing installation at '$destinationRoot'."; continue }
+            }
+        }
     }
 
     if ($PSCmdlet.ShouldProcess($destinationRoot, "Install $moduleName $($moduleInfo.Version)")) {
